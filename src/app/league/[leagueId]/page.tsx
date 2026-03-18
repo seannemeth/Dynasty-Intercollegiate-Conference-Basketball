@@ -19,19 +19,19 @@ export default async function LeagueHubPage({ params }: Props) {
     { data: member },
     { data: readyStatus },
     { data: recentNews },
-    { data: recentResults },
   ] = await Promise.all([
     supabase.from('leagues').select('*, league_rules(key, value)').eq('id', leagueId).single(),
     supabase.from('league_members').select('role, team_id').eq('league_id', leagueId).eq('user_id', user.id).single(),
     supabase.from('league_ready_status').select('*').eq('league_id', leagueId),
     supabase.from('news_feed_items').select('*').eq('league_id', leagueId).order('created_at', { ascending: false }).limit(10),
-    supabase.from('game_results')
-      .select('*, home_team:home_team_id(schools(short_name)), away_team:away_team_id(schools(short_name))')
-      .eq('league_id', leagueId)
-      .eq('season', league?.season || 1)
-      .order('created_at', { ascending: false })
-      .limit(5),
   ]);
+
+  const { data: recentResults } = await supabase.from('game_results')
+    .select('*, home_team:home_team_id(schools(short_name)), away_team:away_team_id(schools(short_name))')
+    .eq('league_id', leagueId)
+    .eq('season', (league as any)?.season || 1)
+    .order('created_at', { ascending: false })
+    .limit(5);
 
   if (!league || !member) redirect('/dashboard');
 
