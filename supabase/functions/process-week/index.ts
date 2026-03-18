@@ -21,7 +21,7 @@ serve(async (req) => {
     // Use service role for all DB writes during simulation
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+      Deno.env.get('SERVICE_ROLE_KEY')!
     );
 
     // Optionally verify caller is commissioner (if using user JWT)
