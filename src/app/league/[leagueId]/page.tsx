@@ -51,14 +51,15 @@ export default async function LeagueHubPage({ params }: Props) {
     .single()
     .then(r => r.data) : null;
 
-  const phaseLabel = {
+  const phaseMap: Record<string, string> = {
     setup: 'League Setup',
     preseason: 'Preseason',
     regular_season: `Week ${league.current_week} — Regular Season`,
     conf_tournament: 'Conference Tournament',
     nat_tournament: 'National Championship Tournament',
     offseason: 'Offseason',
-  }[league.phase] || league.phase;
+  };
+  const phaseLabel = phaseMap[league.phase] || league.phase;
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-6 space-y-4">
