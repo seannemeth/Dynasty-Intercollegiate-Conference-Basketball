@@ -95,7 +95,7 @@ export default async function DashboardPage() {
           {/* Create League */}
           <div className="fm-panel">
             <div className="fm-panel-header">Create League</div>
-            <form action={createLeague} className="p-4 space-y-3">
+            <form action={createLeague as unknown as (formData: FormData) => void} className="p-4 space-y-3">
               <div>
                 <label className="text-xs text-[#94a3b8] block mb-1.5">League Name</label>
                 <input name="name" required placeholder="My Basketball Dynasty" className="fm-input" />
@@ -117,7 +117,7 @@ export default async function DashboardPage() {
           {/* Join League */}
           <div className="fm-panel">
             <div className="fm-panel-header">Join League</div>
-            <form action={joinLeague} className="p-4 space-y-3">
+            <form action={joinLeague as unknown as (formData: FormData) => void} className="p-4 space-y-3">
               <div>
                 <label className="text-xs text-[#94a3b8] block mb-1.5">Invite Code</label>
                 <input
