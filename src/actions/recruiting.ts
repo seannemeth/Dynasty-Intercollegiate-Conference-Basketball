@@ -3,14 +3,17 @@
 import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AnySupabase = any;
+
 export async function allocateRecruitingPoints(
   leagueId: string,
   recruitId: string,
   points: number
 ) {
-  const supabase = await createClient();
+  const supabase = await createClient() as AnySupabase;
 
-  const { data, error } = await supabase.rpc('rpc_recruiting_action', {
+  const { error } = await supabase.rpc('rpc_recruiting_action', {
     p_league_id: leagueId,
     p_recruit_id: recruitId,
     p_action_type: 'allocate_points',
@@ -29,9 +32,9 @@ export async function offerScholarship(
   recruitId: string,
   points: number
 ) {
-  const supabase = await createClient();
+  const supabase = await createClient() as AnySupabase;
 
-  const { data, error } = await supabase.rpc('rpc_recruiting_action', {
+  const { error } = await supabase.rpc('rpc_recruiting_action', {
     p_league_id: leagueId,
     p_recruit_id: recruitId,
     p_action_type: 'offer_scholarship',
@@ -49,9 +52,9 @@ export async function cancelRecruitingOffer(
   leagueId: string,
   recruitId: string
 ) {
-  const supabase = await createClient();
+  const supabase = await createClient() as AnySupabase;
 
-  const { data, error } = await supabase.rpc('rpc_recruiting_action', {
+  const { error } = await supabase.rpc('rpc_recruiting_action', {
     p_league_id: leagueId,
     p_recruit_id: recruitId,
     p_action_type: 'cancel_offer',
@@ -70,9 +73,9 @@ export async function makePortalOffer(
   portalEntryId: string,
   nilOffer: number
 ) {
-  const supabase = await createClient();
+  const supabase = await createClient() as AnySupabase;
 
-  const { data, error } = await supabase.rpc('rpc_portal_offer', {
+  const { error } = await supabase.rpc('rpc_portal_offer', {
     p_league_id: leagueId,
     p_portal_entry_id: portalEntryId,
     p_nil_offer: nilOffer,

@@ -4,8 +4,11 @@ import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AnySupabase = any;
+
 export async function createLeague(formData: FormData) {
-  const supabase = await createClient();
+  const supabase = await createClient() as AnySupabase;
   const name = formData.get('name') as string;
   const advanceMode = (formData.get('advance_mode') as string) || 'manual';
 
@@ -18,7 +21,7 @@ export async function createLeague(formData: FormData) {
 
   if (error) return { error: error.message };
 
-  const leagueId = (data as any)?.league_id;
+  const leagueId = data?.league_id;
 
   // Trigger seeding via edge function
   const seedRes = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/seed-league`, {
@@ -40,7 +43,7 @@ export async function createLeague(formData: FormData) {
 }
 
 export async function joinLeague(formData: FormData) {
-  const supabase = await createClient();
+  const supabase = await createClient() as AnySupabase;
   const inviteCode = formData.get('invite_code') as string;
 
   if (!inviteCode?.trim()) return { error: 'Invite code required' };
@@ -51,14 +54,14 @@ export async function joinLeague(formData: FormData) {
 
   if (error) return { error: error.message };
 
-  const leagueId = (data as any)?.league_id;
+  const leagueId = data?.league_id;
   redirect(`/league/${leagueId}`);
 }
 
 export async function claimTeam(leagueId: string, teamId: string) {
-  const supabase = await createClient();
+  const supabase = await createClient() as AnySupabase;
 
-  const { data, error } = await supabase.rpc('rpc_claim_team', {
+  const { error } = await supabase.rpc('rpc_claim_team', {
     p_league_id: leagueId,
     p_team_id: teamId,
   });
@@ -70,9 +73,9 @@ export async function claimTeam(leagueId: string, teamId: string) {
 }
 
 export async function markReady(leagueId: string) {
-  const supabase = await createClient();
+  const supabase = await createClient() as AnySupabase;
 
-  const { data, error } = await supabase.rpc('rpc_mark_ready', {
+  const { error } = await supabase.rpc('rpc_mark_ready', {
     p_league_id: leagueId,
   });
 
@@ -117,7 +120,7 @@ export async function advanceWeek(leagueId: string) {
 }
 
 export async function submitAdDecision(leagueId: string, choiceKey: string, choiceLabel: string) {
-  const supabase = await createClient();
+  const supabase = await createClient() as AnySupabase;
 
   const { data, error } = await supabase.rpc('rpc_ad_decision', {
     p_league_id: leagueId,
@@ -128,5 +131,5 @@ export async function submitAdDecision(leagueId: string, choiceKey: string, choi
   if (error) return { error: error.message };
 
   revalidatePath(`/league/${leagueId}/nil-ad`);
-  return { success: true, effect: (data as any)?.effect };
+  return { success: true, effect: data?.effect };
 }
