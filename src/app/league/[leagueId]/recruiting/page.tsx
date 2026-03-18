@@ -19,7 +19,7 @@ export default async function RecruitingPage({ params }: Props) {
 
   const { data: league } = await supabase.from('leagues').select('current_week, season, phase').eq('id', leagueId).single();
 
-  const [{ data: recruits }, { data: myActions }, { data: weekState }, { data: recState }] = await Promise.all([
+  const [{ data: recruits }, { data: myActions }] = await Promise.all([
     supabase.from('league_recruits')
       .select('*')
       .eq('league_id', leagueId)
@@ -33,23 +33,21 @@ export default async function RecruitingPage({ params }: Props) {
       .eq('league_id', leagueId)
       .eq('team_id', member.team_id)
       .eq('week', league?.current_week || 1),
-
-    supabase.from('team_week_state')
-      .select('*')
-      .eq('league_id', leagueId)
-      .eq('team_id', member.team_id)
-      .eq('week', league?.current_week || 1)
-      .single()
-      .then(r => r.data),
-
-    supabase.from('team_recruiting_state')
-      .select('*')
-      .eq('league_id', leagueId)
-      .eq('team_id', member.team_id)
-      .eq('season', league?.season || 1)
-      .single()
-      .then(r => r.data),
   ]);
+
+  const { data: weekState } = await supabase.from('team_week_state')
+    .select('*')
+    .eq('league_id', leagueId)
+    .eq('team_id', member.team_id)
+    .eq('week', league?.current_week || 1)
+    .single();
+
+  const { data: recState } = await supabase.from('team_recruiting_state')
+    .select('*')
+    .eq('league_id', leagueId)
+    .eq('team_id', member.team_id)
+    .eq('season', league?.season || 1)
+    .single();
 
   const pointsUsed = weekState?.recruiting_points_used || 0;
   const pointsBudget = weekState?.recruiting_points_budget || 100;

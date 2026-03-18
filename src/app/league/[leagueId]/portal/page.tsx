@@ -16,7 +16,7 @@ export default async function PortalPage({ params }: Props) {
 
   const { data: league } = await supabase.from('leagues').select('current_week, season').eq('id', leagueId).single();
 
-  const [{ data: entries }, { data: myOffers }, { data: finances }, { data: myPlayers }] = await Promise.all([
+  const [{ data: entries }, { data: myOffers }, { data: myPlayers }] = await Promise.all([
     supabase.from('portal_entries')
       .select('*, players(first_name, last_name, position, overall, potential, dev_trait, attr_shooting_2pt, attr_shooting_3pt, attr_defense, year), from_team:from_team_id(schools(short_name))')
       .eq('league_id', leagueId)
@@ -28,18 +28,16 @@ export default async function PortalPage({ params }: Props) {
       .eq('league_id', leagueId)
       .eq('team_id', member.team_id),
 
-    supabase.from('team_finances')
-      .select('nil_bank, nil_committed_weekly, nil_weekly_cap')
-      .eq('team_id', member.team_id)
-      .single()
-      .then(r => r.data),
-
-    // My players who might be at risk
     supabase.from('players')
       .select('id, first_name, last_name, position, overall, morale, in_portal')
       .eq('team_id', member.team_id)
       .order('overall', { ascending: false }),
   ]);
+
+  const { data: finances } = await supabase.from('team_finances')
+    .select('nil_bank, nil_committed_weekly, nil_weekly_cap')
+    .eq('team_id', member.team_id)
+    .single();
 
   const myOfferMap = new Map((myOffers || []).map(o => [o.portal_entry_id, o]));
 
