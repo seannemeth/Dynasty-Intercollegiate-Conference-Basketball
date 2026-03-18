@@ -20,20 +20,15 @@ export async function createLeague(formData: FormData) {
 
   const leagueId = (data as any)?.league_id;
 
-  const seedRes = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/seed-league`, {
+  // Fire seeding — don't block redirect on it
+  fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/seed-league`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
     },
     body: JSON.stringify({ league_id: leagueId }),
-  });
-
-  if (!seedRes.ok) {
-    const err = await seedRes.text();
-    console.error('Seed failed:', err);
-    return { error: 'League created but seeding failed. Contact support.' };
-  }
+  }).then(r => r.text()).then(t => console.log('Seed result:', t)).catch(e => console.error('Seed error:', e));
 
   redirect(`/league/${leagueId}`);
 }
