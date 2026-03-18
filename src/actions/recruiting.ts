@@ -3,15 +3,8 @@
 import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type AnySupabase = any;
-
-export async function allocateRecruitingPoints(
-  leagueId: string,
-  recruitId: string,
-  points: number
-) {
-  const supabase = await createClient() as AnySupabase;
+export async function allocateRecruitingPoints(leagueId: string, recruitId: string, points: number) {
+  const supabase = await createClient();
 
   const { error } = await supabase.rpc('rpc_recruiting_action', {
     p_league_id: leagueId,
@@ -22,17 +15,12 @@ export async function allocateRecruitingPoints(
   });
 
   if (error) return { error: error.message };
-
   revalidatePath(`/league/${leagueId}/recruiting`);
   return { success: true };
 }
 
-export async function offerScholarship(
-  leagueId: string,
-  recruitId: string,
-  points: number
-) {
-  const supabase = await createClient() as AnySupabase;
+export async function offerScholarship(leagueId: string, recruitId: string, points: number) {
+  const supabase = await createClient();
 
   const { error } = await supabase.rpc('rpc_recruiting_action', {
     p_league_id: leagueId,
@@ -43,16 +31,12 @@ export async function offerScholarship(
   });
 
   if (error) return { error: error.message };
-
   revalidatePath(`/league/${leagueId}/recruiting`);
   return { success: true };
 }
 
-export async function cancelRecruitingOffer(
-  leagueId: string,
-  recruitId: string
-) {
-  const supabase = await createClient() as AnySupabase;
+export async function cancelRecruitingOffer(leagueId: string, recruitId: string) {
+  const supabase = await createClient();
 
   const { error } = await supabase.rpc('rpc_recruiting_action', {
     p_league_id: leagueId,
@@ -63,17 +47,12 @@ export async function cancelRecruitingOffer(
   });
 
   if (error) return { error: error.message };
-
   revalidatePath(`/league/${leagueId}/recruiting`);
   return { success: true };
 }
 
-export async function makePortalOffer(
-  leagueId: string,
-  portalEntryId: string,
-  nilOffer: number
-) {
-  const supabase = await createClient() as AnySupabase;
+export async function makePortalOffer(leagueId: string, portalEntryId: string, nilOffer: number) {
+  const supabase = await createClient();
 
   const { error } = await supabase.rpc('rpc_portal_offer', {
     p_league_id: leagueId,
@@ -83,7 +62,6 @@ export async function makePortalOffer(
   });
 
   if (error) return { error: error.message };
-
   revalidatePath(`/league/${leagueId}/portal`);
   return { success: true };
 }

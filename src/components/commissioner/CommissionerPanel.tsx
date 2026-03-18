@@ -19,22 +19,19 @@ type Tab = 'overview' | 'members' | 'teams' | 'rules' | 'audit';
 
 async function assignTeam(leagueId: string, userId: string, teamId: string) {
   const { createClient } = await import('@/lib/supabase/client');
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const supabase = createClient() as any;
+  const supabase = createClient();
   return supabase.rpc('rpc_commish_assign_team', { p_league_id: leagueId, p_user_id: userId, p_team_id: teamId });
 }
 
 async function lockTeam(leagueId: string, teamId: string, locked: boolean) {
   const { createClient } = await import('@/lib/supabase/client');
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const supabase = createClient() as any;
+  const supabase = createClient();
   return supabase.rpc('rpc_commish_lock_team', { p_league_id: leagueId, p_team_id: teamId, p_locked: locked });
 }
 
 async function editRule(leagueId: string, key: string, value: string) {
   const { createClient } = await import('@/lib/supabase/client');
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const supabase = createClient() as any;
+  const supabase = createClient();
   return supabase.rpc('rpc_commish_edit_rule', { p_league_id: leagueId, p_key: key, p_value: value });
 }
 
