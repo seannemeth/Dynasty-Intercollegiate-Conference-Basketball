@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { seedLeague } from '@/lib/game/seed-server';
 
 export async function createLeague(formData: FormData) {
   const supabase = await createClient();
@@ -20,15 +21,11 @@ export async function createLeague(formData: FormData) {
 
   const leagueId = (data as any)?.league_id;
 
-  // Fire seeding — don't block redirect on it
-  fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/seed-league`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
-    },
-    body: JSON.stringify({ league_id: leagueId }),
-  }).then(r => r.text()).then(t => console.log('Seed result:', t)).catch(e => console.error('Seed error:', e));
+  try {
+    await seedLeague(leagueId);
+  } catch (e) {
+    console.error('Seed error:', e);
+  }
 
   redirect(`/league/${leagueId}`);
 }
