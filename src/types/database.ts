@@ -319,5 +319,8 @@ export interface Database {
       rpc_commish_lock_team: { Args: { p_league_id: string; p_team_id: string; p_locked: boolean }; Returns: Json };
       rpc_commish_remove_user: { Args: { p_league_id: string; p_user_id: string }; Returns: Json };
     };
+    Views: { [_ in never]: never };
+    Enums: { [_ in never]: never };
+    CompositeTypes: { [_ in never]: never };
   };
 }
