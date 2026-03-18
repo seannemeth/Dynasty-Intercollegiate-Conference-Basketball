@@ -97,7 +97,7 @@ export async function advanceWeek(leagueId: string) {
     .select('role')
     .eq('league_id', leagueId)
     .eq('user_id', session.user.id)
-    .single();
+    .single() as { data: { role: string } | null; error: unknown };
 
   if (!member || !['commissioner', 'co_commish'].includes(member.role)) {
     return { error: 'Not authorized' };
