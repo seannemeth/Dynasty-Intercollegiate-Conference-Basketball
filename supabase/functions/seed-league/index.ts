@@ -301,10 +301,11 @@ function genName(seed: number) {
   return { first: FIRSTS[Math.floor(r()*FIRSTS.length)], last: LASTS[Math.floor(r()*LASTS.length)] };
 }
 
-function getD1Schools() {
-  // Minimal inline subset — full data fetched from DB in production
-  // For the edge function, schools are upserted from this list
-  // Import the full list from the TypeScript source in build step
-  // For now return a representative set — full 362 in the TS data file
-  return import('./d1_data.json').catch(() => []);
+async function getD1Schools(): Promise<any[]> {
+  try {
+    const mod = await import('./d1_data.json', { assert: { type: 'json' } });
+    return Array.isArray(mod.default) ? mod.default : [];
+  } catch {
+    return [];
+  }
 }
